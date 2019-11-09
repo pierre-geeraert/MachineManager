@@ -1,7 +1,7 @@
 from django.http import HttpResponse, Http404
 from django.shortcuts import render
 from proxmoxer import ProxmoxAPI
-#from . import views
+
 
 def proxmox_connection(proxmox_target,username,password):
     proxmox = ProxmoxAPI(proxmox_target, user=username,
@@ -23,7 +23,7 @@ def action(request,id_proxmox,id_machine,action):
     :return:
     """
 
-    id_proxmox == 'id':
+    id_proxmox == 'id'
     url_proxmox = 'domain.com'
     password = 'password'
     node = 'pve'
