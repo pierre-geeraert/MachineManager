@@ -1,6 +1,7 @@
 from django.http import HttpResponse, Http404
 from django.shortcuts import render
 from proxmoxer import ProxmoxAPI
+import credentials
 #from . import views
 
 def proxmox_connection(proxmox_target,username,password):
@@ -15,7 +16,7 @@ def type_machine(id_machine,id_proxmox):
     print(tab_tryton.index("b"))
     return 0
 
-def action(request,id_proxmox,id_machine,action):
+def action(request,id_machine,action,type_machine):
     """
     :id__proxmox: proxmox target
     :param id_machine: id of desired machine ( int)
@@ -23,15 +24,11 @@ def action(request,id_proxmox,id_machine,action):
     :return:
     """
 
-    id_proxmox == 'id':
-    url_proxmox = 'domain.com'
-    password = 'password'
-    node = 'pve'
+    node = credentials.proxmox.zeus.node
+    #type_machine = 'lxc'
 
-    type_machine = 'lxc'
-
-    proxmox = ProxmoxAPI(url_proxmox, user='user@pve',
-                         password=password, verify_ssl=False)
+    proxmox = ProxmoxAPI(credentials.proxmox.zeus.url_proxmox, user=credentials.proxmox.zeus.user,
+                         password=credentials.proxmox.zeus.password, verify_ssl=False)
 
     if type_machine == 'lxc':
         proxmox.nodes(node).lxc(id_machine).status(action).post()
@@ -47,19 +44,30 @@ def action(request,id_proxmox,id_machine,action):
     elif action == "shutdown":
         sentence = "l`arret doux"
 
+    """
     return HttpResponse(
-        "Vous avez demandées {0} de la machine {1} sur {2} !".format(sentence,id_machine,id_proxmox)
+        "Vous avez demandées {0} de la machine {1} !".format(sentence,id_machine)
         #   "Vous avez demandé l'hyperviseur "
     )
+    """
 
-def check_state(id_machine,wanted_state,proxmox):
+def check_state_mix(id_machine,wanted_state,proxmox,instance_type):
     effective_status = ""
+    if instance_type == "lxc":
+        for node in proxmox.nodes.get():
+            for vm in proxmox.nodes(node['node']).lxc.get():
+                if vm['vmid'] == str(id_machine):
+                    effective_status = (vm['status'])
+                #print(proxmox.nodes(node['node']).lxc.get()[0])
+    elif instance_type == "qemu":
+        for node in proxmox.nodes.get():
+            for vm in proxmox.nodes(node['node']).qemu.get():
+                if vm['vmid'] == str(id_machine):
+                    effective_status = (vm['status'])
+                #print(proxmox.nodes(node['node']).lxc.get()[0])
 
-    for node in proxmox.nodes.get():
-        for vm in proxmox.nodes(node['node']).lxc.get():
-            if vm['vmid'] == str(id_machine):
-                effective_status = (vm['status'])
-            #print(proxmox.nodes(node['node']).lxc.get()[0])
+    else:
+        print("bad instance type")
     return effective_status
 
 def test(request,id_article):
@@ -67,5 +75,3 @@ def test(request,id_article):
         "Vous avez demandée l'hyperviseur n° {0} !".format(id_article)
      #   "Vous avez demandé l'hyperviseur "
     )
-
-#print(check_state(112,"down",proxmox_connection("geeraert.eu","cloudmanager@pve","D7wUhdzZm6D6FLeZHLVprYgt3bxok")))

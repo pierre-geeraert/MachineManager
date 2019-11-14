@@ -1,6 +1,6 @@
 import pymysql
-from Cloudmanager.dashboard import function
-from Cloudmanager.dashboard import credentials
+import function
+import credentials
 import datetime
 
 
@@ -13,21 +13,25 @@ def Launch_sql_query(sql,db):
     # prepare a cursor object using cursor() method
     cursor = db.cursor()
 
-
-    # Prepare SQL query to INSERT a record into the database.
-
     try:
         # Execute the SQL command
         cursor.execute(sql)
         # Fetch all the rows in a list of lists.
         results = cursor.fetchall()
         result_machine = []
+        #result_machine_type = []
         for row in results:
+            result_machine_type = []
             id_scenario = row[0]
             id_hour = bool(row[1])
             name = row[2]
             proxmox = row[3]
-            result_machine.append(proxmox)
+            machine_type = row[4]
+
+            result_machine_type.append(proxmox)
+            result_machine_type.append(machine_type)
+            result_machine_type.append(name)
+            result_machine.append(result_machine_type)
         return result_machine
 
     except:
@@ -45,44 +49,75 @@ def Give_current_hour():
 
 
 def Check_server_supposed_XXX(generated_db_in,wanted_status,Wanted_hour):
-    #Wanted_hour = "18"
     sql_in=""
-    if wanted_status == "up":
-        sql_in = "select scenario_hour.id_scenario , scenario_hour.state_at_" + str(Wanted_hour) + " , machine.name, machine.id_proxmox from scenario_hour,machine where state_at_" + str(Wanted_hour) + "=1 and machine.hour_behaviour_id=scenario_hour.id_scenario;"
-    elif wanted_status == "down":
-        sql_in = "select scenario_hour.id_scenario , scenario_hour.state_at_" + str(Wanted_hour) + " , machine.name, machine.id_proxmox from scenario_hour,machine where state_at_" + str(Wanted_hour) + "=0 and machine.hour_behaviour_id=scenario_hour.id_scenario;"
-
+    if wanted_status == "up" or wanted_status == "start":
+        sql_in = "select scenario_hour.id_scenario , scenario_hour.state_at_" + str(Wanted_hour) + " , machine.name, machine.id_proxmox, machine.type from scenario_hour,machine where state_at_" + str(Wanted_hour) + "=1 and machine.hour_behaviour_id=scenario_hour.id_scenario;"
+    elif wanted_status == "down" or wanted_status == "stop":
+        sql_in = "select scenario_hour.id_scenario , scenario_hour.state_at_" + str(Wanted_hour) + " , machine.name, machine.id_proxmox, machine.type from scenario_hour,machine where state_at_" + str(Wanted_hour) + "=0 and machine.hour_behaviour_id=scenario_hour.id_scenario;"
+    else:
+        print("error value")
     return_value = Launch_sql_query(sql_in, generated_db_in)
     return return_value
 
-def Check_server_already_wanted_state(id_machine,wanted_state):
+def Is_the_server_already_wanted_state(id_machine, wanted_state,instance_type):
     #stopped/running
     bool_result = ""
-    proxmox = function.proxmox_connection(credentials.zeus.url_proxmox,credentials.zeus.user,credentials.zeus.password)
-    if str(function.check_state(id_machine,wanted_state,proxmox)) == str(wanted_state):
+    proxmox = function.proxmox_connection(credentials.proxmox.zeus.url_proxmox,credentials.proxmox.zeus.user,credentials.proxmox.zeus.password)
+    if str(function.check_state_mix(id_machine,wanted_state,proxmox,instance_type)) == str(wanted_state):
         bool_result = True
     else:
         bool_result = False
     return bool_result
 
-def Perform_action():
-    return 0
+def all_operations(wanted_state,list_machine):
+    info_to_display = ""
+    if wanted_state == "running":
+        operation_to_perform = "start"
+    elif wanted_state == "stopped":
+        operation_to_perform = "stop"
+    else:
+        print("Incorrect wanted state")
+
+
+    for machine_target in list_machine:
+        if not(Is_the_server_already_wanted_state(machine_target[0], wanted_state,machine_target[1])):
+            function.action(False,machine_target[0],operation_to_perform,machine_target[1])
+            print(str(machine_target[0])+" is now "+str(wanted_state))
+        elif Is_the_server_already_wanted_state(machine_target[0], wanted_state,machine_target[1]):
+            info_to_display = "operation already performed for "+machine_target[2]
+            print(info_to_display)
+    #return info_to_display
+    return ""
 
 def main():
 
-    generated_db = DB_generation('domain.com', 3306, 'user', 'password',
-                                 'database')
+    generated_db = DB_generation(credentials.sql.url, credentials.sql.port, credentials.sql.user, credentials.sql.password,credentials.sql.database)
+    ###operation:
 
-    list_servers = Check_server_supposed_XXX(generated_db, "up", Give_current_hour())
+    ## Server(s) supposed to be UP
+    list_servers_up = Check_server_supposed_XXX(generated_db, "up", Give_current_hour())
+    print("------------------------------------------")
+    print("-----------------UP-----------------------")
+    print("------------------------------------------")
+    print(list_servers_up)
+    print(all_operations("running", list_servers_up))
 
-    print(list_servers)
-    for server in list_servers:
-        XXX
+
+
+    ## Server(s) supposed to be DOWN
+    list_servers_down = Check_server_supposed_XXX(generated_db, "down", Give_current_hour())
+
+    print("------------------------------------------")
+    print("----------------DOWN----------------------")
+    print("------------------------------------------")
+    print(list_servers_down)
+    print(all_operations("stopped",list_servers_down))
+
 
     # disconnect from server
     generated_db.close()
 
-    print(Check_server_already_wanted_state(112,"stopped"))
+    #print(Is_the_server_already_wanted_state(112, "stopped"))
 
 if __name__ == "__main__":
     main()
@@ -90,10 +125,6 @@ if __name__ == "__main__":
 
 """
 TO DO:
- CREATE 2 FUNCTION(UP/DOWN) TO CHECK AND ALSO TO PERFORM CORRECT ACTION
- CREATE --MAIN-- IN ORDER TO LAUNCH THIS PROGRAMM THROUGH CRON
- EXTRACT TYPE OF MACHINE
- CREATE FUNCTION TO CHECK IF A MACHINE IS ALREADY DOWN OR NOT
  ADD FIELD IN SQL WITH PROJECT AND PUT DESCRIPTION -> ATTACH MACHINE TO PROJECT
 
 """
