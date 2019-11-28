@@ -15,6 +15,15 @@ To reproduce this architecture, you need to perform these actions:
 
     source cloud-machine-managerenv/bin/activate
 
+
+#### Clone git repo (First installation)
+
+    git clone git@github.com:pierre-geeraert/MachineManager.git
+
+#### Pull files
+
+    git pull
+
 #### Install every packages
 
     pip install -r requirements.txt 
