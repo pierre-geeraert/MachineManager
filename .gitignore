@@ -301,5 +301,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-credentials.py
-settings.py
+*/credentials.py
+*/settings.py
