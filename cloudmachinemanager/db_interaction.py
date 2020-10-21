@@ -62,7 +62,7 @@ def Check_server_supposed_XXX(generated_db_in,wanted_status,Wanted_hour):
 def Is_the_server_already_wanted_state(id_machine, wanted_state,instance_type):
     #stopped/running
     bool_result = ""
-    proxmox = function.proxmox_connection(credentials.proxmox.zeus.url_proxmox,credentials.proxmox.zeus.user,credentials.proxmox.zeus.password)
+    proxmox = function.proxmox_connection(credentials.proxmox.server1.url_proxmox,credentials.proxmox.server1.user,credentials.proxmox.server1.password)
     if str(function.check_state_mix(id_machine,wanted_state,proxmox,instance_type)) == str(wanted_state):
         bool_result = True
     else:
