@@ -4,6 +4,8 @@ import credentials
 import datetime
 
 
+
+
 def DB_generation(host_in,port_in,user_in,password_in,db_in):
     db = pymysql.connect(host=host_in, port=port_in, user=user_in, passwd=password_in,db=db_in)
     return db
@@ -40,7 +42,8 @@ def Launch_sql_query(sql,db):
 
 #Return the day of the week as an integer, where Monday is 0 and Sunday is 6.
 def Give_current_weekday():
-    weekday = datetime.datetime.today().weekday()
+    #weekday = datetime.datetime.today().weekday()
+    weekday = datetime.date.today().strftime("%A")
     return weekday
 
 def Give_current_hour():
@@ -48,12 +51,14 @@ def Give_current_hour():
     return now.hour
 
 
-def Check_server_supposed_XXX(generated_db_in,wanted_status,Wanted_hour):
+def Check_server_supposed_XXX(generated_db_in,wanted_status,Wanted_hour,Wanted_day):
     sql_in=""
     if wanted_status == "up" or wanted_status == "start":
-        sql_in = "select scenario_hour.id_scenario , scenario_hour.state_at_" + str(Wanted_hour) + " , machine.name, machine.id_proxmox, machine.type from scenario_hour,machine where state_at_" + str(Wanted_hour) + "=1 and machine.hour_behaviour_id=scenario_hour.id_scenario;"
+        #sql_in = "select scenario_hour.id_scenario , scenario_hour.state_at_" + str(Wanted_hour) + " , machine.name, machine.id_proxmox, machine.type from scenario_hour,machine where state_at_" + str(Wanted_hour) + "=1 and machine.hour_behaviour_id=scenario_hour.id_scenario;"
+        sql_in = "select scenario_hour.id_scenario , scenario_hour.state_at_" + str(Wanted_hour) + " , machine.name, machine.id_proxmox, machine.type  from scenario_hour,machine,scenario_day_of_week where (state_at_" + str(Wanted_hour) + "=1 and state_" + str(Wanted_day) + "=1) and machine.hour_behaviour_id=scenario_hour.id_scenario and machine.day_behaviour_id=scenario_day_of_week.id_scenario;"
     elif wanted_status == "down" or wanted_status == "stop":
-        sql_in = "select scenario_hour.id_scenario , scenario_hour.state_at_" + str(Wanted_hour) + " , machine.name, machine.id_proxmox, machine.type from scenario_hour,machine where state_at_" + str(Wanted_hour) + "=0 and machine.hour_behaviour_id=scenario_hour.id_scenario;"
+        #sql_in = "select scenario_hour.id_scenario , scenario_hour.state_at_" + str(Wanted_hour) + " , machine.name, machine.id_proxmox, machine.type from scenario_hour,machine where state_at_" + str(Wanted_hour) + "=0 and machine.hour_behaviour_id=scenario_hour.id_scenario;"
+        sql_in = "select scenario_hour.id_scenario , scenario_hour.state_at_" + str(Wanted_hour) + " , machine.name, machine.id_proxmox, machine.type  from scenario_hour,machine,scenario_day_of_week where (state_at_" + str(Wanted_hour) + "=0 or state_" + str(Wanted_day) + "=0) and machine.hour_behaviour_id=scenario_hour.id_scenario and machine.day_behaviour_id=scenario_day_of_week.id_scenario;"
     else:
         print("error value")
     return_value = Launch_sql_query(sql_in, generated_db_in)
@@ -96,7 +101,7 @@ def main():
     ###operation:
 
     ## Server(s) supposed to be UP
-    list_servers_up = Check_server_supposed_XXX(generated_db, "up", Give_current_hour())
+    list_servers_up = Check_server_supposed_XXX(generated_db, "up", Give_current_hour(),Give_current_weekday())
     print("------------------------------------------")
     print("-----------------UP-----------------------")
     print("------------------------------------------")
@@ -105,7 +110,7 @@ def main():
 
 
     ## Server(s) supposed to be DOWN
-    list_servers_down = Check_server_supposed_XXX(generated_db, "down", Give_current_hour())
+    list_servers_down = Check_server_supposed_XXX(generated_db, "down", Give_current_hour(),Give_current_weekday())
 
     print("------------------------------------------")
     print("----------------DOWN----------------------")
@@ -117,7 +122,6 @@ def main():
     # disconnect from server
     generated_db.close()
 
-    #print(Is_the_server_already_wanted_state(112, "stopped"))
 
 if __name__ == "__main__":
     main()

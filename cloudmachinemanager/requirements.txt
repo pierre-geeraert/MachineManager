@@ -2,3 +2,6 @@ datetime
 django
 proxmoxer
 requests
+pymysql
+datetime
+calendar
