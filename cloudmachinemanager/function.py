@@ -24,11 +24,11 @@ def action(request,id_machine,action,type_machine):
     :return:
     """
 
-    node = credentials.proxmox.zeus.node
+    node = credentials.proxmox.server1.node
     #type_machine = 'lxc'
 
-    proxmox = ProxmoxAPI(credentials.proxmox.zeus.url_proxmox, user=credentials.proxmox.zeus.user,
-                         password=credentials.proxmox.zeus.password, verify_ssl=False)
+    proxmox = ProxmoxAPI(credentials.proxmox.server1.url_proxmox, user=credentials.proxmox.server1.user,
+                         password=credentials.proxmox.server1.password, verify_ssl=False)
 
     if type_machine == 'lxc':
         proxmox.nodes(node).lxc(id_machine).status(action).post()
