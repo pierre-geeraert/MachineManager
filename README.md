@@ -4,7 +4,7 @@ Manager to stop a VM from my proxmox with http address : for wiki start.wiki.DOM
 
 To reproduce this architecture, you need to perform these actions:
 #### Install the database
-
+    cd SQL_dump
     docker-compose up --detach
 
 #### Create a django project
