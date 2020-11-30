@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+
+  database:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    volumes:
+      - ../SQL_dump:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: cloudmanager
+    ports:
+      - "3306:3306"
+
+#  python:
+#      build: .
+#      command: python db_interaction.py
+#      depends_on:
+#        - database
+
+
+  adminer:
+    links:
+      - "database:db"
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+
+
