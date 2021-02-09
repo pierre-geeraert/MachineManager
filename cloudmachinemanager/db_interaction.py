@@ -1,3 +1,5 @@
+import time
+
 import pymysql
 import function
 import credentials
@@ -95,13 +97,15 @@ def all_operations(wanted_state,list_machine):
     return ""
 
 def main():
-
+    time.sleep(20)
     generated_db = DB_generation(credentials.sql.url, credentials.sql.port, credentials.sql.user, credentials.sql.password,credentials.sql.database)
 
     ###operation:
 
     ## Server(s) supposed to be UP
     list_servers_up = Check_server_supposed_XXX(generated_db, "up", Give_current_hour(),Give_current_weekday())
+    print("hey")
+    print(credentials.sql.url)
     print("------------------------------------------")
     print("-----------------UP-----------------------")
     print("------------------------------------------")

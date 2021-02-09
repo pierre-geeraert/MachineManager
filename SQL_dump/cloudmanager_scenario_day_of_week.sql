@@ -1,4 +1,4 @@
-create table scenario_day_of_week
+create table cloudmanager.scenario_day_of_week
 (
     id_scenario     int          not null
         primary key,

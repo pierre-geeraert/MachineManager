@@ -1,4 +1,4 @@
-create table scenario_hour
+create table cloudmanager.scenario_hour
 (
     id_scenario   int          not null
         primary key,

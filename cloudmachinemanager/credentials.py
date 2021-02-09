@@ -1,14 +1,14 @@
 class proxmox:
     class server1:
-        url_proxmox = 'domain.com'
-        user='root@pve'
-        password = 'password'
+        url_proxmox = '192.168.57.105'
+        user='root@pam'
+        password = '123456789'
         node = 'pve'
 
 class sql:
-    url = 'localhost'
+    url = 'database'
     port = 3306
-    user = 'DB_user'
-    password = 'DB_password'
-    database = 'DB_name'
+    user = 'root'
+    password = 'example'
+    database = 'cloudmanager'
 
