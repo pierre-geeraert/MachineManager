@@ -21,6 +21,19 @@ def pwd(request):
 
 
 def template(request):
+    template = loader.get_template('hour.html')
+    now = datetime.now()
+    current_time = now.strftime("%H:%M:%S")
+    output = "Current Time =", current_time
+
+    context = {
+        'hour_in': output,
+       }
+    return HttpResponse(template.render(context, request))
+    #return render(request, 'hour.html')
+
+
+def cmm(request):
     template = loader.get_template('cmm/index.html')
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
@@ -30,4 +43,4 @@ def template(request):
         'hour_in': output,
        }
     return HttpResponse(template.render(context, request))
-    #return render(request, 'index.html')
+

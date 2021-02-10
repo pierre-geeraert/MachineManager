@@ -9,16 +9,15 @@
     <meta name="description" content="Xlight Bootstrap Responsive HTML5/CSS3 Template">
     <meta name="author" content="Andsolutions.it">
     <meta name="description" content="">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+	<link href="{% static 'css/bootstrap-theme.min.css' %}" rel="stylesheet">
+	<link href="{% static 'css/animate.min.css' %}" rel="stylesheet" >
+	<link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
+	<link href="{% static 'css/prettyPhoto.css' %}" rel="stylesheet">
 
-    <link href="static/static/fonts/bootstrap.min.css" rel="stylesheet">
-	<link href="static/static/fonts/bootstrap-theme.min.css" rel="stylesheet">
-	<link href="static/static/fonts/animate.min.css" rel="stylesheet" >
-	<link href="static/static/fonts/font-awesome.min.css" rel="stylesheet">
-	<link href="static/static/fonts/prettyPhoto.css" rel="stylesheet">
-
-	<link href="static/static/fonts/theme.css" rel="stylesheet">
-	<link href="static/static/fonts/responsive.css" rel="stylesheet">
-	<link href="static/static/fonts/colors/blue.css" rel="stylesheet" class="colors">
+	<link href="{% static 'css/theme.css' %}" rel="stylesheet">
+	<link href="{% static 'css/responsive.css' %}" rel="stylesheet">
+	<link href="{% static 'css/colors/blue.css' %}" rel="stylesheet" class="colors">
 
 
 	<!-- Google Font -->
@@ -26,11 +25,11 @@
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700' rel='stylesheet' type='text/css'>
 
 	<!-- Favicons -->
-    <link rel="shortcut icon" href="static/images/ico/favicon.ico">
-    <link rel="apple-touch-icon" href="static/images/ico/apple-touch-icon.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="static/images/ico/apple-touch-icon-72.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="static/images/ico/apple-touch-icon-114.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="static/images/ico/apple-touch-icon-144.png">
+    <link rel="shortcut icon" href="images/ico/favicon.ico">
+    <link rel="apple-touch-icon" href="images/ico/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/ico/apple-touch-icon-72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/ico/apple-touch-icon-114.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="images/ico/apple-touch-icon-144.png">
 
 </head>
 
@@ -88,9 +87,11 @@
 <section id="home">
     <div id="home-slider" class="carousel slide carousel-fade" data-ride="carousel">
         <div class="carousel-inner">
-			<div class="item active" style="background-image: url(static/images/slider/bg-1.jpg)"> <!-- Change Image -->
+			<div class="item active" style="background-image: url(images/slider/bg-1.jpg)"> <!-- Change Image -->
 				<div class="caption">
-					<h1 class="animated fadeInLeftBig">Welcome to <strong>CloudManager {{ variable }}</strong></h1>
+					<h1 class="animated fadeInLeftBig">Welcome to <strong>CloudManager</strong></h1>
+                                        <h1 class="animated fadeInLeftBig">variable {{ hour_in }}</strong></h1>
+
 				</div>
 			</div>
         </div>
@@ -305,18 +306,18 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-	<script src="static/js/jquery.min.js"></script>
-	<script src="static/js/bootstrap.min.js"></script>
-	<script src="static/js/retina.min.js"></script>
-	<script src="static/js/jquery.easing.min.js"></script>
-	<script src="static/js/wow.min.js"></script>
-	<script src="static/js/waypoints.min.js"></script>
-	<script src="static/js/jquery.countTo.js"></script>
-	<script src="static/js/jquery.mixitup.min.js"></script>
-	<script src="static/js/jquery.prettyPhoto.js"></script>
-	<script src="static/js/jquery.knob.min.js"></script>
-	<script src="static/js/jquery.validate.min.js"></script>
-	<script src="static/js/custom.js"></script>
+	<script src="{% static 'js/jquery.min.js' %}"></script>
+	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'js/retina.min.js' %}"></script>
+	<script src="{% static 'js/jquery.easing.min.js' %}"></script>
+	<script src="{% static 'js/wow.min.js' %}"></script>
+	<script src="{% static 'js/waypoints.min.js' %}"></script>
+	<script src="{% static 'js/jquery.countTo.js' %}"></script>
+	<script src="{% static 'js/jquery.mixitup.min.js' %}"></script>
+	<script src="{% static 'js/jquery.prettyPhoto.js' %}"></script>
+	<script src="{% static 'js/jquery.knob.min.js' %}"></script>
+	<script src="{% static 'js/jquery.validate.min.js' %}"></script>
+	<script src="{% static 'js/custom.js' %}"></script>
 
 
 </body>

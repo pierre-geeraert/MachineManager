@@ -1,3 +1,5 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static '/style.css' %}">
 <!DOCTYPE html>
 <html>
   <head>
@@ -9,6 +11,10 @@
   {% if hour_in %}
     <ul>
         <p>{{ hour_in }}</p>
+        <p>{% static 'style.css'%}</p>
+	<img src="{% static 'example.jpg' %}" alt="My image">
+
+
     </ul>
 {% else %}
     <p>No polls are available.</p>
