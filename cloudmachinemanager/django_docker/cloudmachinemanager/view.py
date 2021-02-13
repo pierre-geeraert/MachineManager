@@ -1,10 +1,13 @@
+import os
+import sys
+
 from django.http import HttpResponse
 from django.template import loader
 from django.shortcuts import render
-
-import os
-#from .models import Question
 from datetime import datetime
+sys.path.append("..")
+from .test import hello
+from .db_interaction import db_interaction
 
 
 def index(request):
@@ -14,10 +17,19 @@ def index(request):
     return HttpResponse(output)
 
 def pwd(request):
-    output = os.system("pwd")
+    output = hello.say_hello()
     return HttpResponse(output)
 
 
+def refresh(request):
+    template = loader.get_template('hour.html')
+
+    output_db_interaction = db_interaction.main()
+
+    context = {
+        'hour_in': output_db_interaction,
+    }
+    return HttpResponse(template.render(context, request))
 
 
 def template(request):

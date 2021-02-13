@@ -25,11 +25,11 @@
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700' rel='stylesheet' type='text/css'>
 
 	<!-- Favicons -->
-    <link rel="shortcut icon" href="images/ico/favicon.ico">
-    <link rel="apple-touch-icon" href="images/ico/apple-touch-icon.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="images/ico/apple-touch-icon-72.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="images/ico/apple-touch-icon-114.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="images/ico/apple-touch-icon-144.png">
+    <link rel="shortcut icon" href="{% static 'images/ico/favicon.ico' %}">
+    <link rel="apple-touch-icon" href="{% static 'images/ico/apple-touch-icon.png' %}">
+    <link rel="apple-touch-icon" sizes="72x72" href="{% static 'images/ico/apple-touch-icon-72.png' %}">
+    <link rel="apple-touch-icon" sizes="114x114" href="{% static 'images/ico/apple-touch-icon-114.png' %}">
+    <link rel="apple-touch-icon" sizes="144x144" href="{% static 'images/ico/apple-touch-icon-144.png' %}">
 
 </head>
 
@@ -87,7 +87,7 @@
 <section id="home">
     <div id="home-slider" class="carousel slide carousel-fade" data-ride="carousel">
         <div class="carousel-inner">
-			<div class="item active" style="background-image: url(images/slider/bg-1.jpg)"> <!-- Change Image -->
+			<div class="item active" style="background-image: url({% static 'images/slider/bg-1.jpg' %})"> <!-- Change Image -->
 				<div class="caption">
 					<h1 class="animated fadeInLeftBig">Welcome to <strong>CloudManager</strong></h1>
                                         <h1 class="animated fadeInLeftBig">variable {{ hour_in }}</strong></h1>

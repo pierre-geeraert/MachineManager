@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   python:
-      build: .
+      build: ""
       command: python db_interaction.py
       #links:
       #  - "database:db"

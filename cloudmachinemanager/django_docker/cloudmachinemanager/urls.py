@@ -13,15 +13,21 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
+
 from django.contrib import admin
 from django.urls import path,include
 from . import view
+#from cloudmachinemanager.django_docker import polls
 
 urlpatterns = [
+    path('', view.cmm),
     path('admin/', admin.site.urls),
-    path('polls/', include('polls.urls')),
+    path('refresh/',view.refresh),
     path('hour/', view.index),
     path('cmm/', view.cmm),
-    path('html/', view.template),
-    path('', admin.site.urls),
+    path('pwd/', view.pwd),
+    path('template/', view.template),
+
+#    path('poll/', polls.urls),
 ]

@@ -1,10 +1,9 @@
+import os
 from django.http import HttpResponse
 from django.template import loader
 from django.shortcuts import render
-
-import os
-#from .models import Question
 from datetime import datetime
+#from cloudmachinemanager.db_interaction import testingg
 
 
 def index(request):
@@ -14,7 +13,7 @@ def index(request):
     return HttpResponse(output)
 
 def pwd(request):
-    output = os.system("pwd")
+    output = "testingg"
     return HttpResponse(output)
 
 
