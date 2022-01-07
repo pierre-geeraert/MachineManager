@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+
+  database:
+    extends:
+      file: Database/docker-compose.yml
+      service: database
+
+  adminer:
+    links:
+      - "database"
+    extends:
+      file: Database/docker-compose.yml
+      service: adminer
+
+  tasker:
+    extends:
+      file: Scheduler/docker-compose.yml
+      service: tasker
+
+
+networks:
+  cloudmanager:

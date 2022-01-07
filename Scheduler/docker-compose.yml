@@ -1,0 +1,20 @@
+version: "2"
+
+services:
+    tasker:
+        image: strm/tasker
+        volumes:
+            - "/var/run/docker.sock:/var/run/docker.sock"
+        environment:
+             configuration: |
+                 schedule:
+                     - every: minute
+                       task: helloFromPython
+                 tasks:
+                     docker:
+                         - name: helloFromPython
+                           image: python:3-slim
+                           volumes:
+                               - "${PWD}/Scheduler/:/code"
+                           script:
+                               - python /code/hello.py
