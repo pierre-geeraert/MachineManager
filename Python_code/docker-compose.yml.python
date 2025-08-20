@@ -1,0 +1,15 @@
+ersion: "3.9"
+services:
+  web:
+    image: python:3
+    networks:
+        - cloudmanager
+    ports:
+      - "5000:5000"
+    volumes:
+        - "${PWD}/Scheduler/code/:/code"
+    command: bash -c "pip install -r /code/requirements.txt && python /code/hello.py && python /code/db_interaction.py"
+
+networks:
+  cloudmanager:
+

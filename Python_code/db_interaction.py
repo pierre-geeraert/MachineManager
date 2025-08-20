@@ -1,10 +1,9 @@
 import time
-
 import pymysql
-import function
+#simport function
 import credentials
 import datetime
-
+import cryptography
 
 
 
@@ -16,7 +15,7 @@ def DB_generation(host_in,port_in,user_in,password_in,db_in):
 def Launch_sql_query(sql,db):
     # prepare a cursor object using cursor() method
     cursor = db.cursor()
-
+    #print(sql)
     try:
         # Execute the SQL command
         cursor.execute(sql)
@@ -29,12 +28,12 @@ def Launch_sql_query(sql,db):
             id_scenario = row[0]
             id_hour = bool(row[1])
             name = row[2]
-            proxmox = row[3]
-            machine_type = row[4]
-
-            result_machine_type.append(proxmox)
-            result_machine_type.append(machine_type)
+            namespace = row[3]
+            replicas = row[4]
+            
+            result_machine_type.append(namespace)
             result_machine_type.append(name)
+            result_machine_type.append(replicas)
             result_machine.append(result_machine_type)
         return result_machine
 
@@ -56,11 +55,11 @@ def Give_current_hour():
 def Check_server_supposed_XXX(generated_db_in,wanted_status,Wanted_hour,Wanted_day):
     sql_in=""
     if wanted_status == "up" or wanted_status == "start":
-        #sql_in = "select scenario_hour.id_scenario , scenario_hour.state_at_" + str(Wanted_hour) + " , machine.name, machine.id_proxmox, machine.type from scenario_hour,machine where state_at_" + str(Wanted_hour) + "=1 and machine.hour_behaviour_id=scenario_hour.id_scenario;"
-        sql_in = "select scenario_hour.id_scenario , scenario_hour.state_at_" + str(Wanted_hour) + " , machine.name, machine.id_proxmox, machine.type  from scenario_hour,machine,scenario_day_of_week where (state_at_" + str(Wanted_hour) + "=1 and state_" + str(Wanted_day) + "=1) and machine.hour_behaviour_id=scenario_hour.id_scenario and machine.day_behaviour_id=scenario_day_of_week.id_scenario;"
+        sql_in = "select scenario_hour.id_scenario , scenario_hour.state_at_" + str(Wanted_hour) + " , machine.name, machine.namespace, machine.replicas from scenario_hour,machine where state_at_" + str(Wanted_hour) + "=1 and machine.hour_behaviour_id=scenario_hour.id_scenario;"
+        #sql_in = "select scenario_hour.id_scenario , scenario_hour.state_at_" + str(Wanted_hour) + " , machine.name, machine.id_proxmox, machine.type  from scenario_hour,machine,scenario_day_of_week where (state_at_" + str(Wanted_hour) + "=1 and state_" + str(Wanted_day) + "=1) and machine.hour_behaviour_id=scenario_hour.id_scenario and machine.day_behaviour_id=scenario_day_of_week.id_scenario;"
     elif wanted_status == "down" or wanted_status == "stop":
-        #sql_in = "select scenario_hour.id_scenario , scenario_hour.state_at_" + str(Wanted_hour) + " , machine.name, machine.id_proxmox, machine.type from scenario_hour,machine where state_at_" + str(Wanted_hour) + "=0 and machine.hour_behaviour_id=scenario_hour.id_scenario;"
-        sql_in = "select scenario_hour.id_scenario , scenario_hour.state_at_" + str(Wanted_hour) + " , machine.name, machine.id_proxmox, machine.type  from scenario_hour,machine,scenario_day_of_week where (state_at_" + str(Wanted_hour) + "=0 or state_" + str(Wanted_day) + "=0) and machine.hour_behaviour_id=scenario_hour.id_scenario and machine.day_behaviour_id=scenario_day_of_week.id_scenario;"
+        sql_in = "select scenario_hour.id_scenario , scenario_hour.state_at_" + str(Wanted_hour) + " , machine.name, machine.namespace, machine.replicas from scenario_hour,machine where state_at_" + str(Wanted_hour) + "=0 and machine.hour_behaviour_id=scenario_hour.id_scenario;"
+        #sql_in = "select scenario_hour.id_scenario , scenario_hour.state_at_" + str(Wanted_hour) + " , machine.name, machine.id_proxmox, machine.type  from scenario_hour,machine,scenario_day_of_week where (state_at_" + str(Wanted_hour) + "=0 or state_" + str(Wanted_day) + "=0) and machine.hour_behaviour_id=scenario_hour.id_scenario and machine.day_behaviour_id=scenario_day_of_week.id_scenario;"
     else:
         print("error value")
     return_value = Launch_sql_query(sql_in, generated_db_in)
