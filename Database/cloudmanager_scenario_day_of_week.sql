@@ -12,3 +12,4 @@ create table cloudmanager.scenario_day_of_week
 );
 
 INSERT INTO cloudmanager.scenario_day_of_week (id_scenario, name_scenario, state_Monday, state_Tuesday, state_Wednesday, state_Thursday, state_Friday, state_Saturday, state_Sunday) VALUES (0, 'always off', FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE);
+INSERT INTO cloudmanager.scenario_day_of_week (id_scenario, name_scenario, state_Monday, state_Tuesday, state_Wednesday, state_Thursday, state_Friday, state_Saturday, state_Sunday) VALUES (1, 'always on', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE);
