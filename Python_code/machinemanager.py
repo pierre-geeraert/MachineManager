@@ -38,10 +38,35 @@ def compare_expected_replicas_count(array_list_current_deploy):
             modify_replica_count(Namespace,Name,expected_replica_count)
         
 def main():
+    """
     k8s_connection("/home/pi-ux-ce/.kube/config")
     
     array_list_deploy = k8s_list_deploy()
+
+
+
+    deployments = {}
     
+    for deploy in array_list_deploy:  # Assuming this is your list of deployments
+        namespace = deploy[0]
+        name = deploy[1]
+        replicas = deploy[2]
+    
+        # Ensure the namespace exists in the dictionary
+        if namespace not in deployments:
+            deployments[namespace] = {}
+    
+        # Add the deployment info
+        deployments[namespace][name] = {
+            "replica_count": replicas,
+            # Add other fields if needed
+        }
+
+    #print(deployments["wikijs"])
+    #print(deployments["bitwarden"])
+    #print(deployments["unifi"]["unifi-db"]["replica_count"])
+    #print(deployments)
+"""    
     #compare_expected_replicas_count(array_list_deploy)
     generated_db = db_interaction.DB_generation(credentials.sql.url, credentials.sql.port, credentials.sql.user, credentials.sql.password,credentials.sql.database)
     

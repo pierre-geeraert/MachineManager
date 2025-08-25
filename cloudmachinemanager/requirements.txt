@@ -4,3 +4,8 @@ proxmoxer
 requests
 pymysql
 datetime
+docker
+kubernetes
+ruamel.yaml
+pyyaml
+watchdog

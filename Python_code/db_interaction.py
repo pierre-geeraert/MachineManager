@@ -4,7 +4,7 @@ import pymysql
 import credentials
 import datetime
 import cryptography
-
+from machinemanager import main
 
 
 def DB_generation(host_in,port_in,user_in,password_in,db_in):
@@ -58,39 +58,41 @@ def Check_server_supposed_XXX(generated_db_in,wanted_status,Wanted_hour,Wanted_d
         sql_in = "select scenario_hour.id_scenario , scenario_hour.state_at_" + str(Wanted_hour) + " , machine.name, machine.namespace, machine.replicas from scenario_hour,machine where state_at_" + str(Wanted_hour) + "=1 and machine.hour_behaviour_id=scenario_hour.id_scenario;"
         #sql_in = "select scenario_hour.id_scenario , scenario_hour.state_at_" + str(Wanted_hour) + " , machine.name, machine.id_proxmox, machine.type  from scenario_hour,machine,scenario_day_of_week where (state_at_" + str(Wanted_hour) + "=1 and state_" + str(Wanted_day) + "=1) and machine.hour_behaviour_id=scenario_hour.id_scenario and machine.day_behaviour_id=scenario_day_of_week.id_scenario;"
     elif wanted_status == "down" or wanted_status == "stop":
-        sql_in = "select scenario_hour.id_scenario , scenario_hour.state_at_" + str(Wanted_hour) + " , machine.name, machine.namespace, machine.replicas from scenario_hour,machine where state_at_" + str(Wanted_hour) + "=0 and machine.hour_behaviour_id=scenario_hour.id_scenario;"
+        #sql_in = "select scenario_hour.id_scenario , scenario_hour.state_at_" + str(Wanted_hour) + " , machine.name, machine.namespace, machine.replicas from scenario_hour,machine where state_at_" + str(Wanted_hour) + "=0 and machine.hour_behaviour_id=scenario_hour.id_scenario;"
+        #adding zero as the desired replicas would be zero if we want the server to be off
+        sql_in = "select scenario_hour.id_scenario , scenario_hour.state_at_" + str(Wanted_hour) + " , machine.name, machine.namespace, 0 from scenario_hour,machine where state_at_" + str(Wanted_hour) + "=0 and machine.hour_behaviour_id=scenario_hour.id_scenario;"
+
         #sql_in = "select scenario_hour.id_scenario , scenario_hour.state_at_" + str(Wanted_hour) + " , machine.name, machine.id_proxmox, machine.type  from scenario_hour,machine,scenario_day_of_week where (state_at_" + str(Wanted_hour) + "=0 or state_" + str(Wanted_day) + "=0) and machine.hour_behaviour_id=scenario_hour.id_scenario and machine.day_behaviour_id=scenario_day_of_week.id_scenario;"
     else:
         print("error value")
     return_value = Launch_sql_query(sql_in, generated_db_in)
     return return_value
 
-def Is_the_server_already_wanted_state(id_machine, wanted_state,instance_type):
+def Is_the_server_already_wanted_state(namespace,name, wanted_state):
     #stopped/running
     bool_result = ""
-    proxmox = function.proxmox_connection(credentials.proxmox.server1.url_proxmox,credentials.proxmox.server1.user,credentials.proxmox.server1.password)
-    if str(function.check_state_mix(id_machine,wanted_state,proxmox,instance_type)) == str(wanted_state):
-        bool_result = True
-    else:
-        bool_result = False
+    if(wanted_state == "down"):
+        if (main.deployments[namespace][name]["replica_count"]  > 0):
+            bool_result = False
+        else:
+            bool_result = True
+    if(wanted_state == "up"):
+        if (main.deployments[namespace][name]["replica_count"]  > 0):
+            bool_result = True
+        else:
+            bool_result = False
+
     return bool_result
 
 def all_operations(wanted_state,list_machine):
     info_to_display = ""
-    if wanted_state == "running":
-        operation_to_perform = "start"
-    elif wanted_state == "stopped":
-        operation_to_perform = "stop"
-    else:
-        print("Incorrect wanted state")
-
 
     for machine_target in list_machine:
-        if not(Is_the_server_already_wanted_state(machine_target[0], wanted_state,machine_target[1])):
-            function.action(False,machine_target[0],operation_to_perform,machine_target[1])
-            print(str(machine_target[0])+" is now "+str(wanted_state))
+        if not(Is_the_server_already_wanted_state(namespace=machine_target[0], wanted_state=wanted_state,name=machine_target[1])):
+            main.modify_replica_count(namespace=machine_target[0],name=machine_target[1], desired_replicas=machine_target[2])
+            print(str(machine_target[0])+"/"+str(machine_target[1])+" is now "+str(wanted_state))
         elif Is_the_server_already_wanted_state(machine_target[0], wanted_state,machine_target[1]):
-            info_to_display = "operation already performed for "+machine_target[2]
+            info_to_display = "operation already performed for "+str(machine_target[0])+"/"+str(machine_target[1])
             print(info_to_display)
     #return info_to_display
     return ""
